@@ -8,6 +8,7 @@ import {
 
 import MapView from 'react-native-maps';
 import NavigationBar from 'react-native-navbar';
+import Spinner from 'react-native-loading-spinner-overlay';
 var foursquare = require('react-native-foursquare-api')({
     clientID: 'DNNC2ISLHXBADT4TCDATD12NLIJ3GMRKSMDDZFAJOVUZC24W',
     clientSecret: '1L4FPH1D1WCNSEGLENSDBWSOUCB4LUHW34XFX52FBZEEHBYR',
@@ -22,7 +23,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
   
-    this.state = {location: ''};
+    this.state = {location: '', markers: [],};
   };
 
   watchID: ?number = null;
@@ -49,27 +50,21 @@ class App extends React.Component {
         lng: position.coords.longitude
       }});
       location = lastPosition;
+      this.setState({location:location});
       });
 
-    this.setState({location:location});
 
     console.log(this.state);
     setTimeout(function() {
-      var params = {
-      "ll": location.coords.latitude + "," + location.coords.longitude,
-      "query": "coffee"
-    };
 
 
-    foursquare.venues.getVenues(params)
-      .then(function(venues) {
-            console.log(venues);
-        })
-      .catch(function(err){
-        console.log(err);
-      });
+    }, 3000);
 
-    }, 5000);
+    if(!this.state.location) {
+      console.log("location unknown");
+    } else {
+      getToilets();
+    }
 
   };
 
@@ -94,26 +89,63 @@ class App extends React.Component {
       title: 'FindMyToilet',
     };
 
-    return (
-      <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          showsCompass={false}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          loadingEnabled={true}
-          followsUserLocation={true}
-         initialRegion={{
-          latitude: this.state.location.coords.latitude,
-          longitude: this.state.location.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-          }} 
-          provider="google" />
-          <NavigationBar style={styles.navBar} title={titleConfig} rightButton={rightButtonConfig} />
+    var getToilets = function() {
+      if(this.state.location) {
 
-      </View>
-    );
+
+      }
+    }
+
+    if(!this.state.location) {
+      return(
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>FindMyToilet</Text>
+          <Spinner visible={true} size="large" overlayColor='rgba(255,255,255,0.5)' color="black" />
+        </View>
+      );
+    } else {
+      var params = {
+        "ll": this.state.location.coords.latitude + "," + this.state.location.coords.longitude,
+        "query": "coffee"
+      };
+
+
+      foursquare.venues.getVenues(params)
+        .then(function(venues) {
+              console.log(venues);
+          })
+        .catch(function(err){
+          console.log(err);
+        }); 
+      return (
+        <View style={styles.container}>
+          <MapView
+            style={styles.map}
+            showsCompass={false}
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+            loadingEnabled={true}
+            followsUserLocation={true}
+           initialRegion={{
+            latitude: this.state.location.coords.latitude,
+            longitude: this.state.location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+            }} 
+            provider="google">
+            {this.state.markers.map(marker => (
+              <MapView.Marker
+                key={marker.key}
+                coordinate={marker.coordinate}
+                pinColor={marker.color}
+              />
+            ))}
+          </MapView>
+            <NavigationBar style={styles.navBar} title={titleConfig} rightButton={rightButtonConfig} />
+        </View>
+      );
+      
+    }
   }
 }
 
@@ -124,6 +156,14 @@ const styles = StyleSheet.create({
      flexDirection: 'column',
      justifyContent: 'space-between',
 
+   },
+   loadingContainer: {
+    flex: 1,
+    alignItems: 'center' 
+   },
+   loadingText: {
+    fontSize: 20,
+    marginTop: 100,
    },
    map: {
      ...StyleSheet.absoluteFillObject,
