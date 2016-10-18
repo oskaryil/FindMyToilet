@@ -7,8 +7,10 @@
   "main": "main.js",
   "dependencies": {
     "exponent": "^10.0.4",
+    "nearest-coffee": "^1.0.0",
     "react": "~15.3.2",
     "react-native": "github:exponentjs/react-native#sdk-10.1.2",
+    "react-native-admob": "^1.1.5",
     "react-native-foursquare-api": "0.0.4",
     "react-native-loading-spinner-overlay": "^0.3.0",
     "react-native-maps": "^0.8.2",

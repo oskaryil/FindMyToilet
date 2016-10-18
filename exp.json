@@ -1,18 +1,18 @@
 {
-  "name": "find-my-toilet",
-  "description": "An empty new project",
+  "name": "Find My Toilet",
+  "description": "Find a nearby public toilet",
   "slug": "find-my-toilet",
   "sdkVersion": "10.0.0",
   "version": "1.0.0",
   "orientation": "portrait",
   "primaryColor": "#cccccc",
-  "iconUrl": "https://s3.amazonaws.com/exp-brand-assets/ExponentEmptyManifest_192.png",
+  "iconUrl": "http://i.imgur.com/ypWZHxw.png",
   "notification": {
-    "iconUrl": "https://s3.amazonaws.com/exp-us-standard/placeholder-push-icon-blue-circle.png",
+    "iconUrl": "http://i.imgur.com/ypWZHxw.png",
     "color": "#000000"
   },
   "loading": {
-    "iconUrl": "https://s3.amazonaws.com/exp-brand-assets/ExponentEmptyManifest_192.png",
+    "iconUrl": "http://i.imgur.com/ypWZHxw.png",
     "hideExponentText": false
   },
   "packagerOpts": {
