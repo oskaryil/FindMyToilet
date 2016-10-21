@@ -236,7 +236,7 @@ class App extends React.Component {
     };
 
     var titleConfig = {
-      title: 'FindMyToilet',
+      title: 'Find My Toilet',
     };
 
     if(!this.state.location) {
