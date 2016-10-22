@@ -23,5 +23,10 @@
   },
   "android": {
     "package": "me.oskaryildiz.findmytoilet",
+    "config": {
+      "googleMaps": {
+        "apiKey": "AIzaSyD8KPoSEMahgZahhyYcXEQn0MVU3_65hX8",
+      },
+    }
   }
 }
