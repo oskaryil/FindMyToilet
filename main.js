@@ -1,4 +1,5 @@
 import Exponent from 'exponent';
+import { Constants } from 'exponent';
 import React from 'react';
 import {
   StyleSheet,
@@ -292,6 +293,7 @@ const styles = StyleSheet.create({
      alignItems: 'stretch',
      flexDirection: 'column',
      justifyContent: 'space-between',
+     marginTop: Constants.statusBarHeight,
 
    },
    loadingContainer: {
