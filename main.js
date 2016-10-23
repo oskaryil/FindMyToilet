@@ -1,11 +1,12 @@
 import Exponent from 'exponent';
-import { Constants } from 'exponent';
+import { Constants, Location, Permissions } from 'exponent';
 import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
+  Platform,
 } from 'react-native';
 
 import MapView from 'react-native-maps';
@@ -16,26 +17,25 @@ var foursquare = require('react-native-foursquare-api')({
     clientSecret: '1L4FPH1D1WCNSEGLENSDBWSOUCB4LUHW34XFX52FBZEEHBYR',
     style: 'foursquare'
 });
-
+var googlePlaces = require('googleplaces');
 
 let id = 0;
-
-
-
 
 class App extends React.Component {   
 
   constructor(props) {
     super(props);
   
-    this.state = {location: '', markers: [],};
+    this.state = {
+      markers: [],
+    };
   };
 
   getToilets() {
 
     var params = {
       "ll": this.state.location.coords.latitude + "," + this.state.location.coords.longitude,
-      "query": "coffee"
+      "categoryId": "4bf58dd8d48988d1e0931735,4bf58dd8d48988d113951735,4bf58dd8d48988d181941735,4d4b7105d754a06374d81259,4bf58dd8d48988d16d941735",
     };
 
 
@@ -165,6 +165,7 @@ class App extends React.Component {
               longitude: toilet.location.lng,
             },
             title: toilet.name,
+            description: toilet.location.address,
             key: id++,
           });
 
@@ -177,49 +178,31 @@ class App extends React.Component {
         console.log(err);
       }); 
 
-  }
+  };
 
-  watchID: ?number = null;
+  async getLocationAsync() {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+    if (status === 'granted') {
+      let currentLocation = await Location.getCurrentPositionAsync({enableHighAccuracy: Platform.OS === 'ios'});
+      this.setState({location: currentLocation});
+      this.getToilets();
+    } else {
+      throw new Error('Location permission not granted');
+    }
+  };
 
   componentDidMount() {
-    var location = {};
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var initialPosition = JSON.stringify(position);
-        this.setState({initialCoords: {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }})
-        console.log("INITIAL", initialPosition);
-        this.setState({initialPosition});
-      },
-      (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    );
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      var lastPosition = position;
-      this.setState({lastCoords: {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }});
-      location = lastPosition;
-      this.setState({location:location});
-      this.getToilets();
-      });
 
+    this.getLocationAsync();
     this.setState({
       markers: [
       ...this.state.markers,
       ],
     });
-
-    console.log(this.state);
-
-  };
-
+  }
 
   componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
   }
 
   render() {
@@ -274,6 +257,7 @@ class App extends React.Component {
                 key={marker.key}
                 coordinate={marker.coordinate}
                 title={marker.title}
+                description={marker.description}
                 image={require('./app/img/100toilet.png')}
               />
             ))}

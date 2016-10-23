@@ -13,7 +13,7 @@
   },
   "loading": {
     "iconUrl": "http://i.imgur.com/ypWZHxw.png",
-    "hideExponentText": false
+    "hideExponentText": true
   },
   "packagerOpts": {
     "assetExts": ["ttf", "mp4"]
